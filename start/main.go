@@ -27,9 +27,6 @@ func main() {
 	}()
 
 	server.GET("/query", query.GetResponse)
-	server.GET("/1/health", health.GetFirstProvider)
-	server.GET("/2/health", health.GetSecondProvider)
-	server.GET("/3/health", health.GetThirdProvider)
 
 	server.RouteNotFound("/*", func(c echo.Context) error {
 		return c.JSON(404, map[string]string{
