@@ -12,15 +12,14 @@ func GetUser() *models.User {
 	}
 	defer result.Close()
 
-	var user *models.User
+	var user *models.User = new(models.User)
 	for result.Next() {
 		err := result.Scan(&user.Id, &user.Name, &user.Email)
 		if err != nil {
 			panic(err)
 		}
+		user.HideId()
 	}
-
-	user.HideId()
 
 	return user
 }

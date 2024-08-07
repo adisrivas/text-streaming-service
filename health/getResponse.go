@@ -1,46 +1,40 @@
 package health
 
 import (
-	"net/http"
-	"text-streaming-service/db"
+	"errors"
+	"fmt"
+	"text-streaming-service/controllers"
+	"text-streaming-service/err"
+	"text-streaming-service/models"
+	"text-streaming-service/stubs"
 	"time"
 )
 
-var URLs []string = []string{
-	"http://localhost:8000/1/health",
-	"http://localhost:8000/2/health",
-	"http://localhost:8000/3/health",
-}
-
 func GetResponse() {
 	var defaultQuestion string = "What is the capital of India"
-	for i, url := range URLs {
-		result, err := db.Conn.Exec("INSERT INTO requests (provider, user_id) VALUES (?,?)", i+1, 0)
-		if err != nil {
-			panic(err)
-		}
-		requestId, _ := result.LastInsertId()
-		
-		var IsAvailable int = 1
-		
+	for i := 0; i < 3; i++ {
+
+		requestId := controllers.AddRequest(i+1, 0, defaultQuestion)
+
+		var isAvailable int = 1
+
 		var statusCode int
-		var response string
-		var err error
-		
+		var err1 error
+
 		start := time.Now().Unix()
 		if i == 0 {
-			statusCode, response, err = stubs.FirstProvider(defaultQuestion)
+			statusCode, _, err1 = stubs.FirstProvider(defaultQuestion)
 		} else if i == 1 {
-			statusCode, response, err = stubs.SecondProvider(defaultQuestion)
+			statusCode, _, err1 = stubs.SecondProvider(defaultQuestion)
 		} else {
-			statusCode, response, err = stubs.ThirdProvider(defaultQuestion)
+			statusCode, _, err1 = stubs.ThirdProvider(defaultQuestion)
 		}
 		end := time.Now().Unix()
 
 		var e error
-		if err != nil || statusCode != 200 || end-start > 5 {
+		if err1 != nil || statusCode != 200 || end-start > 5 {
 			isAvailable = 0
-			e = err
+			e = err1
 		}
 		if statusCode != 200 {
 			e = errors.New(fmt.Sprintf("some error in response. status code- %d", statusCode))
@@ -52,14 +46,14 @@ func GetResponse() {
 		if e != nil {
 			err.Log(e, int(requestId))
 		}
-		
+
 		controllers.UpdateProviderTable(&models.UpdateProviderTableInput{
-			Provider: i+1,
-			Start: start,
-			End: end,
-			UserId: 0,
-			RequestId: int(requestId),
-			IsAvailable: isAvailable
+			Provider:    i + 1,
+			Start:       int(start),
+			End:         int(end),
+			UserId:      0,
+			RequestId:   int(requestId),
+			IsAvailable: isAvailable,
 		})
 	}
 }

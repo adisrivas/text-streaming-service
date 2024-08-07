@@ -4,4 +4,5 @@ CREATE TABLE `first_provider` (
     `created_at` INT(11) NOT NULL,
     `request_id` INT NOT NULL,
     `user_id` INT NOT NULL COMMENT '0->system generated'
+    `is_available` TINYINT(4) NOT NULL DEFAULT '1',
 );
