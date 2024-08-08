@@ -26,6 +26,14 @@ func GetResponse(c echo.Context) error {
 		return nil
 	}
 
+	if controllers.IsRateLimitExceeded(user) {
+		c.JSON(200, map[string]string{
+			"message": "reached requests limit for the day",
+			"data":    "",
+		})
+		return nil
+	}
+
 	var availableProviders map[int]bool = make(map[int]bool)
 	var responseTime map[int]int = make(map[int]int)
 	var wg sync.WaitGroup

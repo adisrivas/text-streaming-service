@@ -1,0 +1,1 @@
+INSERT INTO users (name, email, plan_id) VALUES ('Test User', 'testuser@gmail.com', 1);

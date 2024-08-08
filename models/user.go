@@ -5,6 +5,7 @@ type User struct {
 	HiddenId int    `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
+	PlanId   int    `json:"-"`
 }
 
 func (u *User) HideId() {

@@ -1,0 +1,1 @@
+INSERT INTO plans (name, plan_limit) VALUES ('Default', '10');

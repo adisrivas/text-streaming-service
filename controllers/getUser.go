@@ -6,7 +6,7 @@ import (
 )
 
 func GetUser() *models.User {
-	result, err := db.Conn.Query("SELECT id, name, email FROM users ORDER BY id DESC LIMIT 1")
+	result, err := db.Conn.Query("SELECT id, name, email, plan_id FROM users ORDER BY id DESC LIMIT 1")
 	if err != nil {
 		panic(err)
 	}
@@ -14,7 +14,7 @@ func GetUser() *models.User {
 
 	var user *models.User = new(models.User)
 	for result.Next() {
-		err := result.Scan(&user.Id, &user.Name, &user.Email)
+		err := result.Scan(&user.Id, &user.Name, &user.Email, &user.PlanId)
 		if err != nil {
 			panic(err)
 		}
