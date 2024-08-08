@@ -11,6 +11,7 @@ Implementation of text streaming endpoint in Golang.
 - Health check is performed at every 5 minutes and the current state is recorded for each inference service.
 - Rate limit is enforced for each user depending on the plan they are subscribed to.
 - Stubs of each service are implemented for testing purpose.
+- Errors are logged of relevant states for debugging purpose.
 
 
 ### Steps
