@@ -88,12 +88,17 @@ func GetResponse(c echo.Context) error {
 
 	var responseData string
 	var isProcessed bool = false
+	var requestId int64 = 0
 	for provider, isAvailable := range availableProviders {
 		var newAvailabilityStatus int = 1
 		if isAvailable {
 			var start int64
 			var end int64
-			requestId := controllers.AddRequest(provider, user.Id, prompt)
+			if requestId == 0 {
+				requestId = controllers.AddRequest(provider, user.Id, prompt)
+			} else {
+				controllers.UpdateRequest(provider, int(requestId))
+			}
 			if responseTime[provider] <= 5 {
 				start = time.Now().Unix()
 				var statusCode int
