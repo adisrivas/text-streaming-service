@@ -22,9 +22,10 @@ func IsRateLimitExceeded(user *models.User) bool {
 	}
 	currentDT := time.Now().UTC()
 	currentDate := currentDT.Format("2006-01-02")
-	currentDate = fmt.Sprintf("%s 00:00:00", currentDate)
+	startDate := fmt.Sprintf("%s 00:00:00", currentDate)
+	endDate := fmt.Sprintf("%s 23:59:59", currentDate)
 
-	res, err = db.Conn.Query("SELECT COUNT(id) AS request_count FROM requests WHERE user_id=? AND created_at>=?", user.Id, currentDate)
+	res, err = db.Conn.Query("SELECT COUNT(id) AS request_count FROM requests WHERE user_id=? AND created_at>=? AND created_at<=?", user.Id, startDate, endDate)
 	if err != nil {
 		panic(err)
 	}
